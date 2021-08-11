@@ -34,6 +34,7 @@ public class Main {
             return 0;
         }
 
+        // hardcode value
         if(s.startsWith("CM")){
             return  900 + romanToInt(s.substring(2));
         }else if(s.startsWith("CD")) {

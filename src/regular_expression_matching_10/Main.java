@@ -13,6 +13,7 @@ public class Main {
     }
 
     public static boolean isMatch(String s, String p) {
+        // no need to check
         if(p.isEmpty()){
             return s.isEmpty();
         }
@@ -20,6 +21,7 @@ public class Main {
         char cur = p.charAt(0);
         boolean escape = (cur=='.');
 
+        // only compare one char
         if(p.length() == 1){
             if(s.length() != 1){
                 return false;
@@ -28,6 +30,7 @@ public class Main {
             return escape || s.equals(p);
         }
 
+        // case multi match and one char match
         if(p.charAt(1) == '*'){
             int index = -1;
             //free match

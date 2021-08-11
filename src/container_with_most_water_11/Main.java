@@ -21,6 +21,7 @@ public class Main {
             rHeight = height[right];
             max = Math.max(max,Math.min(height[left], rHeight) * ((right - left)));
 
+            // in this way it will remain the higher value
             if(lHeight > rHeight){
                 right--;
             }else {
