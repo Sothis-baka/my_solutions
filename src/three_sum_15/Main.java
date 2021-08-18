@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Main {
-    /*
-        Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
+/*
+    Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
 
-        Notice that the solution set must not contain duplicate triplets.
-     */
+    Notice that the solution set must not contain duplicate triplets.
+ */
+public class Main {
     public static void main(String[] args){
         int[] nums = {1,1,1};
         System.out.println(threeSum(nums));
