@@ -2,15 +2,90 @@ package four_sum_18;
 
 import java.util.*;
 
+/*
+    Given an array nums of n integers, return an array of all the unique quadruplets [nums[a], nums[b], nums[c], nums[d]] such that:
+    0 <= a, b, c, d < n
+    a, b, c, and d are distinct.
+    nums[a] + nums[b] + nums[c] + nums[d] == target
+    You may return the answer in any order.
+ */
 public class Main {
     public static void main(String[] args){
-        int[] input = {2,2,2,2,2};
-        int target = 8;
+        int[] input = {-2,-1,-1,1,1,2,2};
+        int target = 0;
 
         System.out.println(fourSum(input, target));
     }
 
-    public static List<List<Integer>> fourSum(int[] nums, int target) {
+    public static List<List<Integer>> fourSum(int[] nums, int target){
+        List<List<Integer>> result = new ArrayList<>();
+
+        // sort first
+        Arrays.sort(nums);
+
+        int first = 0, second, length = nums.length, left, right, remain, sum;
+
+        while(first < length-3){
+            second = first + 1;
+            while (second < length - 2){
+                left = second + 1;
+                right = length - 1;
+                remain = target - nums[first] - nums[second];
+
+                while (left < right){
+                    sum = nums[left] + nums[right];
+
+                    // fulfilled
+                    if(sum == remain){
+                        List<Integer> temp = new ArrayList<>();
+                        temp.add(nums[first]);
+                        temp.add(nums[second]);
+                        temp.add(nums[left]);
+                        temp.add(nums[right]);
+                        result.add(temp);
+
+                        // skip examined choices
+                        while(left < right && nums[left] == nums[left + 1])
+                            left++;
+                        // skip examined choices
+                        while (left < right && nums[right] == nums[right - 1])
+                            right--;
+
+                        left++;
+                    }else if(sum < remain){
+                        // skip examined choices
+                        while(left < right && nums[left] == nums[left + 1])
+                            left++;
+
+                        left++;
+                    }else{
+                        // skip examined choices
+                        while(left < right && nums[right] == nums[right-1])
+                            right--;
+
+                        right--;
+                    }
+                }
+
+                // skip examined choices
+                while (second < length - 2 && nums[second] == nums[second+1]){
+                    second++;
+                }
+
+                second++;
+            }
+
+            // skip examined choices
+            while (first < length - 3 && nums[first] == nums[first+1]){
+                first++;
+            }
+            first++;
+        }
+
+        return result;
+    }
+
+    /*public static List<List<Integer>> fourSum(int[] nums, int target) {
         Map<Integer, List<int[]>> twoSum = new HashMap<>();
         List<List<Integer>> result = new ArrayList<>();
 
@@ -19,10 +94,10 @@ public class Main {
             numSet.add(num);
         }
 
-        /*
+        *//*
             Key is the sum of two integers
             Value saves arrays of indexes
-         */
+         *//*
         List<Integer> touched = new ArrayList<>();
         for(int num1: numSet) {
             for (int num2: numSet) {
@@ -114,5 +189,5 @@ public class Main {
         }
 
         return true;
-    }
+    }*/
 }
