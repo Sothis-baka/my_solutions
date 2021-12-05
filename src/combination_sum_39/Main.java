@@ -20,7 +20,7 @@ public class Main {
         return result;
     }
 
-    public static void sumHelper(int[] candidate, int index, int curSum, int target, List<Integer> curList, List<List<Integer>> result){
+    private static void sumHelper(int[] candidate, int index, int curSum, int target, List<Integer> curList, List<List<Integer>> result){
         if(curSum < target){
             for(int i=index; i<candidate.length; i++){
                 int val = candidate[i];
