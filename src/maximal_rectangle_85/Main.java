@@ -1,4 +1,4 @@
-package maximal_rectangle;
+package maximal_rectangle_85;
 
 import java.util.Stack;
 
