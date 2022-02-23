@@ -6,35 +6,30 @@ package burst_balloons_312;
     Return the maximum coins you can collect by bursting the balloons wisely.
  */
 public class Main {
-    public static int maxCoins(int[] nums) {
-        // Add 1 to start and end
-        int[] newArr = new int[nums.length + 2];
-        newArr[0] = newArr[newArr.length-1] = 1;
-        System.arraycopy(nums, 0, newArr, 1, nums.length);
+    public int maxCoins(int[] nums) {
+        int length = nums.length;
+        int[] newNums = new int[length + 2];
+        newNums[0] = 1;
+        System.arraycopy(nums, 0, newNums, 1, length);
+        newNums[length + 1] = 1;
+        int[][] cache = new int[length + 2][length + 2];
 
-        int[][] cache = new int[newArr.length][newArr.length];
-        return helper(newArr, 0, newArr.length - 1, cache);
+        return coinHelper(newNums, 0, length + 1, cache);
     }
 
-    private static int helper(int[] nums, int left, int right, int[][] cache){
-        if(left == right-1){
+    private int coinHelper(int[] nums, int start, int end, int[][] cache){
+        if(start >= end - 1){
             return 0;
         }
-
-        if(cache[left][right] != 0){
-            return cache[left][right];
+        if(cache[start][end] != 0){
+            return cache[start][end];
         }
 
         int max = 0;
-        for(int i=left+1; i<right; i++){
-            max = Math.max(max, nums[left] * nums[i] * nums[right] + helper(nums, left, i, cache) + helper(nums, i, right, cache));
+        for(int i=start+1; i<end; i++){
+            max = Math.max(max, nums[start] * nums[i] * nums[end] + coinHelper(nums, start, i, cache) + coinHelper(nums, i, end, cache));
         }
-        cache[left][right] = max;
-
+        cache[start][end] = max;
         return max;
-    }
-
-    public static void main(String[] args){
-        System.out.println(maxCoins(new int[]{3,1,5,9}));
     }
 }
