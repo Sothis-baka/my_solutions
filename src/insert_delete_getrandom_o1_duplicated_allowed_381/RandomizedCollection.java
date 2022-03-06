@@ -1,7 +1,5 @@
 package insert_delete_getrandom_o1_duplicated_allowed_381;
 
-import insert_delete_getrandom_o1_380.RandomizedSet;
-
 import java.util.*;
 
 public class RandomizedCollection {
