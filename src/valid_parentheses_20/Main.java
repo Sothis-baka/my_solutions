@@ -14,46 +14,25 @@ import java.util.Stack;
  */
 public class Main {
     public static boolean isValid(String s) {
-        // Use list to save comparable parentheses
-        List<Character> left = new ArrayList<>();
-        List<Character> right = new ArrayList<>();
-
-        left.add('(');
-        left.add('{');
-        left.add('[');
-
-        right.add(')');
-        right.add('}');
-        right.add(']');
-
-        // Use stack to save candidates
-        Stack<Character> stack = new Stack<>();
-
         int length = s.length();
+        Stack<Character> stack = new Stack<>();
         for(int i=0; i<length; i++){
-            char temp = s.charAt(i);
-
-            if(left.contains(temp)){
-                // Save lefts
-                stack.push(temp);
-            }else if(right.contains(temp)){
-                // no candidate
-                if(stack.size() == 0){
-                    return false;
+            char cur = s.charAt(i);
+            switch(cur){
+                case '(', '[', '{' -> stack.push(cur);
+                case ')' -> {
+                    if(stack.isEmpty() || stack.pop()!='(') return false;
                 }
-
-                // Compare rights with saved lefts
-                char correspond = stack.pop();
-                if(left.indexOf(correspond) != right.indexOf(temp)){
-                    return false;
+                case ']' -> {
+                    if(stack.isEmpty() || stack.pop()!='[') return false;
                 }
-            }else {
-                // Invalid character
-                return false;
+                case '}' -> {
+                    if(stack.isEmpty() || stack.pop()!='{') return false;
+                }
             }
         }
 
-        return stack.size() <= 0;
+        return stack.isEmpty();
     }
 
     public static void main(String[] args){

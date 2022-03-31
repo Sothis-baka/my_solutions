@@ -17,69 +17,43 @@ public class Main {
         System.out.println(fourSum(input, target));
     }
 
-    public static List<List<Integer>> fourSum(int[] nums, int target){
+    public static List<List<Integer>> fourSum(int[] nums, int target) {
         List<List<Integer>> result = new ArrayList<>();
-
-        // sort first
         Arrays.sort(nums);
 
-        int first = 0, second, length = nums.length, left, right, remain, sum;
+        int length = nums.length;
+        for(int a=0; a<length-3; a++){
+            int numa = nums[a];
+            for(int d=length-1; d>a+2; d--){
+                int sum2 = numa + nums[d];
+                int b = a + 1, c = d - 1;
 
-        while(first < length-3){
-            second = first + 1;
-            while (second < length - 2){
-                left = second + 1;
-                right = length - 1;
-                remain = target - nums[first] - nums[second];
+                while(b < c){
+                    int sum = sum2 + nums[b] + nums[c];
+                    if(sum == target){
+                        List<Integer> list = new ArrayList<>();
+                        list.add(nums[a]);
+                        list.add(nums[b]);
+                        list.add(nums[c]);
+                        list.add(nums[d]);
+                        result.add(list);
 
-                while (left < right){
-                    sum = nums[left] + nums[right];
+                        while(b < c && nums[b] == nums[b+1]) b++;
+                        while(b < c && nums[c] == nums[c-1]) c--;
 
-                    // fulfilled
-                    if(sum == remain){
-                        List<Integer> temp = new ArrayList<>();
-                        temp.add(nums[first]);
-                        temp.add(nums[second]);
-                        temp.add(nums[left]);
-                        temp.add(nums[right]);
-                        result.add(temp);
-
-                        // skip examined choices
-                        while(left < right && nums[left] == nums[left + 1])
-                            left++;
-                        // skip examined choices
-                        while (left < right && nums[right] == nums[right - 1])
-                            right--;
-
-                        left++;
-                    }else if(sum < remain){
-                        // skip examined choices
-                        while(left < right && nums[left] == nums[left + 1])
-                            left++;
-
-                        left++;
+                        b++;
+                        c--;
+                    }else if(sum < target){
+                        b++;
                     }else{
-                        // skip examined choices
-                        while(left < right && nums[right] == nums[right-1])
-                            right--;
-
-                        right--;
+                        c--;
                     }
                 }
 
-                // skip examined choices
-                while (second < length - 2 && nums[second] == nums[second+1]){
-                    second++;
-                }
-
-                second++;
+                while(d>a+2 && nums[d] == nums[d-1]) d--;
             }
 
-            // skip examined choices
-            while (first < length - 3 && nums[first] == nums[first+1]){
-                first++;
-            }
-            first++;
+            while(a<length-3 && nums[a] == nums[a+1]) a++;
         }
 
         return result;

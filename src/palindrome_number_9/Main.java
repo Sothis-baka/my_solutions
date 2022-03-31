@@ -10,14 +10,10 @@ public class Main {
     }
 
     public static boolean isPalindrome(int x) {
-        String temp = Integer.toString(x);
-        int length = temp.length();
-        for(int i=0; i<length/2; i++){
-            if(temp.charAt(i) != temp.charAt(length-1-i)){
-                return false;
-            }
+        String str = Integer.toString(x);
+        for(int l=0, r=str.length()-1; l<r; l++, r--){
+            if(str.charAt(l) != str.charAt(r)) return false;
         }
-
         return true;
     }
 }

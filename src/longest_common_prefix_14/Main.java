@@ -11,18 +11,18 @@ public class Main {
     }
 
     public static String longestCommonPrefix(String[] strs) {
-        String temp="";
+        int minLength = Integer.MAX_VALUE;
+        for(String str: strs){
+            minLength = Math.min(minLength, str.length());
+        }
 
-        int max = strs[0].length();
-        for (int i=0; i<max; i++){
-            temp = strs[0].substring(0, i+1);
+        for(int i=0; i<minLength; i++){
+            char ch = strs[0].charAt(i);
             for(String str: strs){
-                if(!str.startsWith(temp)){
-                    return temp.substring(0, i);
-                }
+                if(str.charAt(i) != ch) return str.substring(0, i);
             }
         }
 
-        return temp;
+        return strs[0].substring(0, minLength);
     }
 }

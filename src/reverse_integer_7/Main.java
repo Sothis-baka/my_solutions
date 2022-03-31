@@ -16,24 +16,22 @@ public class Main {
     }
 
     public static int reverse(int x) {
-        StringBuilder strBl = new StringBuilder();
-        String strNum = Integer.toString(x);
-
-        if(x < 0){
-            strNum = strNum.substring(1);
-            strBl.append("-");
+        boolean neg = false;
+        long cpy = x;
+        if(cpy < 0){
+            neg = true;
+            cpy = -cpy;
         }
 
-        int length = strNum.length();
-        for(int i=length-1; i>=0; i--){
-            strBl.append(strNum.charAt(i));
+        long result = 0;
+        while(cpy > 0){
+            int digit = (int) (cpy % 10);
+            result = 10 * result + digit;
+            cpy /= 10;
         }
 
-        BigInteger temp = new BigInteger(strBl.toString());
-        if(temp.compareTo(new BigInteger("2147483647")) > 0 || temp.compareTo(new BigInteger("-2147483648")) < 0){
-            return 0;
-        }
+        if(result > Integer.MAX_VALUE || result < Integer.MIN_VALUE) return 0;
 
-        return temp.intValue();
+        return neg ? (int) -result : (int) result;
     }
 }

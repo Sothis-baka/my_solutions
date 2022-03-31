@@ -1,47 +1,29 @@
 package merge_k_sorted_lists_23;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import structures.ListNode;
+
+import java.util.*;
 
 /*
     You are given an array of k linked-lists lists, each linked-list is sorted in ascending order.
     Merge all the linked-lists into one sorted linked-list and return it.
  */
 public class Main {
-    /* Provided structure */
-    public static class ListNode {
-        int val;
-        ListNode next;
-        ListNode() {}
-        ListNode(int val) { this.val = val; }
-        ListNode(int val, ListNode next) { this.val = val; this.next = next; }
-    }
-
-    /* Use PriorQueue might be a better solution */
     public static ListNode mergeKLists(ListNode[] lists) {
-        ListNode newLi = new ListNode();
-        List<Integer> li = new ArrayList<>();
-
-        // Save nums to a list in order
-        for(ListNode temp: lists){
-            while (temp != null){
-                li.add(temp.val);
-                temp = temp.next;
-            }
+        Queue<ListNode> queue = new PriorityQueue<>((a, b) -> a.val - b.val);
+        for(ListNode list: lists){
+            if(list != null) queue.offer(list);
         }
 
-        Collections.sort(li);
-
-        // Convert the list to ListNodes.
-        ListNode pt = newLi;
-        for(int temp: li){
-            pt.next = new ListNode();
+        ListNode head = new ListNode(), pt = head;
+        while(!queue.isEmpty()){
+            ListNode list = queue.poll();
+            pt.next = list;
             pt = pt.next;
-            pt.val = temp;
+            if(list.next != null) queue.offer(list.next);
         }
 
-        return newLi.next;
+        return head.next;
     }
 
     public static void main(String[] args){

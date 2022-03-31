@@ -9,48 +9,25 @@ import java.util.List;
 public class Main {
     public static List<String> generateParenthesis(int n) {
         List<String> result = new ArrayList<>();
-        helpGenerate(result, "", n*2);
-
+        helper(new StringBuilder(), n, 0, result);
         return result;
     }
 
-    /* Recursively append one char per run */
-    private static void helpGenerate(List<String> list, String str, int n){
-        // Invalid, stop
-        if(!helpValid(str, n == 0)){
-            return;
-        }
+    private static void helper(StringBuilder cur, int n, int pos, List<String> result){
+        if(n == 0 && pos == 0) result.add(cur.toString());
+        else{
+            if(n > 0){
+                cur.append('(');
+                helper(cur, n-1, pos+1, result);
+                cur.deleteCharAt(cur.length() - 1);
+            }
 
-        // Finished, add to list
-        if(n == 0){
-            list.add(str);
-            return;
-        }
-
-        String left = str + "(";
-        String right = str + ")";
-
-        // Run for str with one more char
-        helpGenerate(list, left, n-1);
-        helpGenerate(list, right, n-1);
-    }
-
-    private static boolean helpValid(String str, boolean finished){
-        int length = str.length();
-        int depth = 0;
-
-        for(int i=0; i<length; i++){
-            if(str.charAt(i) == '('){
-                depth++;
-            }else {
-                // ')' number is more than '('
-                if(--depth < 0)
-                    return false;
+            if(pos > 0){
+                cur.append(')');
+                helper(cur, n, pos - 1, result);
+                cur.deleteCharAt(cur.length() - 1);
             }
         }
-
-        // If finished, should check equality of '(' and ')'
-        return !finished || depth == 0;
     }
 
     public static void main(String[] args){

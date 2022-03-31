@@ -1,6 +1,8 @@
 package remove_nth_node_from_end_of_list_19;
 
 
+import structures.ListNode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,47 +10,20 @@ import java.util.List;
     Given the head of a linked list, remove the nth node from the end of the list and return its head.
  */
 public class Main {
-    /*
-        provided structure
-     */
-    static class ListNode {
-        int val;
-        ListNode next;
-        ListNode() {}
-        ListNode(int val) { this.val = val; }
-        ListNode(int val, ListNode next) { this.val = val; this.next = next; }
-    }
-
     public static ListNode removeNthFromEnd(ListNode head, int n) {
-        // Length is as least 1
-        assert head != null;
+        ListNode pt1 = head, pt2 = head;
 
-        /* Save pointers */
-        List<ListNode> temp = new ArrayList<>();
-        ListNode pt = head;
-        while (pt != null){
-            temp.add(pt);
+        if(head.next == null) return null;
+        for(int i=0; i<n; i++) pt2 = pt2.next;
+        if(pt2 == null) return head.next;
 
-            pt = pt.next;
+        while(pt2.next != null){
+            pt1 = pt1.next;
+            pt2 = pt2.next;
         }
 
-        /* Find the one to be removed */
-        int index = temp.size() - n;
-        /* Not sure whether it needs to modify original object */
-        if(index == 0){
-            if(head.next == null){
-                head.val = 0;
-                return null;
-            }
+        pt1.next = pt1.next.next;
 
-            head.val = head.next.val;
-            head.next = head.next.next;
-
-            return head;
-        }
-
-        /* Connect adjacent two */
-        temp.get(index - 1).next = temp.get(index).next;
         return head;
     }
 

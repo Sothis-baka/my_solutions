@@ -1,7 +1,9 @@
 package longest_substring_without_repeat_ch_3;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /* Given a string s, find the length of the longest substring without repeating characters. */
 public class Main {
@@ -12,30 +14,22 @@ public class Main {
 
     public static int lengthOfLongestSubstring(String s) {
         int length = s.length();
+        Set<Character> cache = new HashSet<>();
 
-        List<Character> list = new ArrayList<>();
-        int max = 0;
-
+        int start = 0, max = 0;
         for(int i=0; i<length; i++){
-            char temp = s.charAt(i);
-
-            int index = list.indexOf(temp);
-            // if it's not in list, add it
-            if(index < 0){
-                list.add(temp);
-            }else {
-                // update size
-                int size = list.size();
-                if(size > max){
-                    max = size;
+            char ch = s.charAt(i);
+            if(cache.contains(ch)){
+                for(; s.charAt(start) != ch; start++){
+                    cache.remove(s.charAt(start));
                 }
-
-                // remove chars before that one, add the new one.
-                list = list.subList(index + 1, size);
-                list.add(temp);
+                start++;
             }
+
+            cache.add(ch);
+            max = Math.max(max, i - start + 1);
         }
 
-        return Math.max(list.size(), max);
+        return max;
     }
 }

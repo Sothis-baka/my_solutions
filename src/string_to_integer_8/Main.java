@@ -23,43 +23,30 @@ public class Main {
     }
 
     public static int myAtoi(String s) {
-        boolean negative = false;
-
-        String temp = s.trim();
-        if(temp.startsWith("+")){
-            temp = temp.substring(1);
-        }else if(temp.startsWith("-")){
-            negative = true;
-            temp = temp.substring(1);
+        // remove no-use space
+        s = s.trim();
+        boolean pos = true;
+        if(s.isEmpty()) return 0;
+        else if(s.charAt(0) == '-'){
+            pos = false;
+            s = s.substring(1);
+        }else if(s.charAt(0) == '+'){
+            s = s.substring(1);
         }
 
-        if(temp.matches("\\d+(.*)")){
-            return getDigits(temp, negative);
-        }
-
-        return 0;
-    }
-
-    public static int getDigits(String str, boolean negative){
-        int value=0;
-
-        int length = str.length();
+        if(s.isEmpty()) return 0;
+        int length = s.length();
+        long result = 0;
         for(int i=0; i<length; i++){
-            int cur = str.charAt(i) - '0';
-            if(cur >=0 && cur <= 9){
-                if(!negative && (value > 214748364 || (value == 214748364 && cur>7)))
-                    return 2147483647;
+            int digit = s.charAt(i) - '0';
+            if(digit < 0 || digit > 9) break;
+            result = result * 10 + digit;
 
-                if(negative && (value > 214748364 || (value == 214748364 && cur>8)))
-                    return -2147483648;
-
-                value *= 10;
-                value += cur;
-            }else {
-                break;
-            }
+            if((pos ? result : - result) >= Integer.MAX_VALUE) return Integer.MAX_VALUE;
+            if((pos ? result : - result) <= Integer.MIN_VALUE) return Integer.MIN_VALUE;
         }
 
-        return negative ? -value : value;
+        result = pos ? result : - result;
+        return (int) result;
     }
 }

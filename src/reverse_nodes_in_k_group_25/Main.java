@@ -1,5 +1,7 @@
 package reverse_nodes_in_k_group_25;
 
+import structures.ListNode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,76 +11,28 @@ import java.util.List;
     You may not alter the values in the list's nodes, only nodes themselves may be changed.
  */
 public class Main {
-    /* Provided structure */
-    public static class ListNode {
-        int val;
-        ListNode next;
-        ListNode() {}
-        ListNode(int val) { this.val = val; }
-        ListNode(int val, ListNode next) { this.val = val; this.next = next; }
-    }
-
     public static ListNode reverseKGroup(ListNode head, int k) {
-        // No action needed
-        if(k==1){
-            return head;
-        }
-
-        /* realHead.next is the head of result */
-        ListNode realHead = new ListNode(), pt = realHead;
-
-        /* In case remain >= k */
-        while(enough(head, k)){
-            ListNode reversedK = switchK(head, k);
-
-            for(int i=0; i<k; i++){
-                head = head.next;
-            }
-
-            // Append reversed nodes, move pointer to the end
-            pt.next = reversedK;
-            while (pt.next != null)
-                pt = pt.next;
-        }
-
-        // In case there is one remain, concat it to the list.
-        if(head != null){
-            pt.next = head;
-            while(pt.next != null)
-                pt = pt.next;
-        }
-
-        // delete the next pointer at the end.
-        pt.next = null;
-
-        return realHead.next;
-    }
-
-    /* helper function to test if there are k nodes */
-    private static boolean enough(ListNode head, int k){
-        for(int i=0; i<k; i++){
-            if(head == null){
-                return false;
-            }
-            head = head.next;
-        }
-
-        return true;
-    }
-
-    /* Return reversed k nodes */
-    private static ListNode switchK(ListNode head, int k){
         ListNode newHead = new ListNode(), pt = newHead;
-        List<Integer> temp = new ArrayList<>();
-        for(int i=0; i<k; i++){
-            temp.add(head.val);
-            head = head.next;
-        }
+        newHead.next = head;
 
-        for(int i=k-1; i>=0; i--){
-            pt.next = new ListNode();
-            pt = pt.next;
-            pt.val = temp.get(i);
+        a: while(pt.next != null){
+            ListNode pt1 = pt.next, pt2 = pt1, newPt = pt1;
+            for(int i=0; i<k; i++){
+                if(pt2 == null) break a;
+                pt2 = pt2.next;
+            }
+
+            ListNode newL = null;
+            while(pt1 != pt2){
+                ListNode temp = pt1.next;
+                pt1.next = newL;
+                newL = pt1;
+                pt1 = temp;
+            }
+
+            pt.next = newL;
+            pt = newPt;
+            newPt.next = pt1;
         }
 
         return newHead.next;
