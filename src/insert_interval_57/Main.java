@@ -9,27 +9,41 @@ import java.util.*;
  */
 public class Main {
     public static int[][] insert(int[][] intervals, int[] newInterval) {
-        List<int[]> list = new ArrayList<>();
-        list.add(newInterval);
-        list.addAll(Arrays.asList(intervals));
-
-        list.sort((a,b) -> Integer.compare(a[0], b[0]));
-
         List<int[]> result = new ArrayList<>();
-        for(int[] temp: list){
-            if(result.isEmpty()){
-                result.add(temp);
-            }else{
-                int[] prev = result.get(result.size() - 1);
-                if(prev[1] < temp[0]){
-                    result.add(temp);
-                }else{
-                    prev[1] = Math.max(prev[1], temp[1]);
-                }
-            }
+        for(int[] interval: intervals) result.add(interval);
+        int i=0;
+        while(i < result.size() && result.get(i)[0] < newInterval[0]) i++;
+        result.add(i, newInterval);
+
+        // First merge from left might change the index.
+        merge(result, i, i+1);
+        merge(result, i-1, i);
+
+        int size = result.size();
+        int[][] answer = new int[size][];
+        for(i=0; i<size; i++){
+            answer[i] = result.get(i);
+        }
+        return answer;
+    }
+
+    private static void merge(List<int[]> intervals, int i, int j){
+        if(i < 0 || j == intervals.size()) return;
+
+        int l1 = intervals.get(i)[0], r1 = intervals.get(i)[1], l2 = intervals.get(j)[0], r2 = intervals.get(j)[1];
+
+        // Not intersected
+        if(r1 < l2) return;
+
+        if(r1 >= r2) {
+            // Included, do nothing
+        }else{
+            // Need to extend
+            intervals.get(i)[1] = r2;
         }
 
-        return result.toArray(new int[result.size()][]);
+        intervals.remove(j);
+        merge(intervals, i, i+1);
     }
 
     public static void main(String[] args){

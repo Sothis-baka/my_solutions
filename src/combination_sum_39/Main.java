@@ -12,25 +12,22 @@ import java.util.List;
 public class Main {
     public static List<List<Integer>> combinationSum(int[] candidates, int target) {
         List<List<Integer>> result = new ArrayList<>();
-        List<Integer> curList = new ArrayList<>();
-
-        Arrays.sort(candidates);
-        sumHelper(candidates, 0, 0, target, curList, result);
-
+        helper(new ArrayList<>(), candidates, 0, target, result, 0);
         return result;
     }
 
-    private static void sumHelper(int[] candidate, int index, int curSum, int target, List<Integer> curList, List<List<Integer>> result){
-        if(curSum < target){
-            for(int i=index; i<candidate.length; i++){
-                int val = candidate[i];
-                // make a copy
-                List<Integer> newList = new ArrayList<>(curList);
-                newList.add(val);
-                sumHelper(candidate, i, curSum+val, target, newList, result);
-            }
-        }else if(curSum == target){
-            result.add(curList);
+    private static void helper(List<Integer> cur, int[] candidates, int curVal, int target, List<List<Integer>> result, int lastNum){
+        if(curVal >= target){
+            if(curVal == target) result.add(new ArrayList<>(cur));
+
+            return;
+        }
+
+        for(int num: candidates){
+            if(num < lastNum) continue;
+            cur.add(num);
+            helper(cur, candidates, curVal + num, target, result, num);
+            cur.remove(cur.size() - 1);
         }
     }
 

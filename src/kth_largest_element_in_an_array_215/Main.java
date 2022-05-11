@@ -1,52 +1,39 @@
 package kth_largest_element_in_an_array_215;
 
+import java.util.Random;
+
 /*
     Given an integer array nums and an integer k, return the kth largest element in the array.
     Note that it is the kth largest element in the sorted order, not the kth distinct element.
  */
 public class Main {
+    static Random roll = new Random();
+
     public static int findKthLargest(int[] nums, int k) {
-        return findHelper(nums, 0, nums.length-1, k);
+        return partition(nums, 0, nums.length-1, k);
     }
 
-    private static int findHelper(int[] nums, int left, int right, int k){
-        // Pivot value
-        int pivot = nums[right];
+    private static int partition(int[] nums, int start, int end, int k){
+        if(start >= end) return nums[end];
+        int pivot = roll.nextInt(end - start) + start;
+        swap(nums, start, pivot);
 
-        // Quick sort
-        int index = left;
-        for(int i=left; i<right; i++){
-            if(nums[i] < pivot){
-                swap(nums, index, i);
-                index++;
-            }
+        int val = nums[start];
+        int i =start + 1, index = start + 1;
+        while(i <= end){
+            if(nums[i++] < val) swap(nums, i - 1, index++);
         }
 
-        swap(nums, index, right);
-
-        int count = right - index + 1;
-        if(count == k){
-            return nums[index];
-        }else if(count > k){
-            return findHelper(nums, index+1, right, k);
-        }else{
-            return findHelper(nums, left, index-1, k-count);
-        }
+        swap(nums, start, --index);
+        if(end - index == k - 1) return nums[index];
+        else if(end - index < k - 1) return partition(nums, start, index - 1, k - (end - index + 1));
+        else return partition(nums, index + 1, end, k);
     }
 
-    // Helper function to swap values in the array
-    private static void swap(int[] nums, int left, int right){
-        int temp = nums[left];
-        nums[left] = nums[right];
-        nums[right] = temp;
-    }
-
-    // Helper function to print out the array
-    private static void printIt(int[] nums){
-        for(int temp: nums){
-            System.out.print(temp);
-        }
-        System.out.println();
+    private static void swap(int[] nums, int l, int r){
+        int temp = nums[l];
+        nums[l] = nums[r];
+        nums[r] = temp;
     }
 
     public static void main(String[] args){

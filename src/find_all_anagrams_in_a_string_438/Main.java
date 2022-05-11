@@ -6,26 +6,26 @@ import java.util.List;
 
 public class Main {
     public List<Integer> findAnagrams(String s, String p) {
-        int length = s.length(), lengthP = p.length();
-        int[] target = new int[26];
-        int[] cache = new int[26];
+        List<Integer> result = new ArrayList<>();
 
+        int[] target = new int[26], cur = new int[26];
+        int lengthS = s.length(), lengthP = p.length();
+        if(lengthS < lengthP) return result;
+
+        // Count and save
         for(int i=0; i<lengthP; i++){
             target[p.charAt(i) - 'a']++;
+            cur[s.charAt(i) - 'a']++;
         }
 
-        List<Integer> result = new ArrayList<>();
-        int start = 0;
-        for(int end = 0; end < length; end++){
-            cache[s.charAt(end) - 'a']++;
+        // Base case
+        if(Arrays.equals(target, cur)) result.add(0);
+        int pos = lengthP;
+        while(pos < lengthS){
+            cur[s.charAt(pos - lengthP) - 'a']--;
+            cur[s.charAt(pos++) - 'a']++;
 
-            if(end - start + 1 > lengthP){
-                cache[s.charAt(start++) - 'a']--;
-            }
-
-            if(Arrays.equals(cache, target)){
-                result.add(start);
-            }
+            if(Arrays.equals(target, cur)) result.add(pos - lengthP);
         }
 
         return result;

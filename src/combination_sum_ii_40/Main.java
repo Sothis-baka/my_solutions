@@ -11,30 +11,22 @@ import java.util.List;
 public class Main {
     public static List<List<Integer>> combinationSum2(int[] candidates, int target) {
         List<List<Integer>> result = new ArrayList<>();
-        List<Integer> curList = new ArrayList<>();
         Arrays.sort(candidates);
-
-        sumHelper(candidates, 0, 0, target, curList, result);
-
+        helper(candidates, 0, 0, target, new ArrayList<>(), result);
         return result;
     }
 
-    private static void sumHelper(int[] candidates, int index, int curSum, int target, List<Integer> curList, List<List<Integer>> result){
-        if(curSum == target){
-            result.add(curList);
-        }else if(curSum < target){
-            for(int i=index; i<candidates.length; i++){
-                int val = candidates[i];
-                List<Integer> newList = new ArrayList<>(curList);
-                newList.add(val);
+    private static void helper(int[] candidates, int index, int curVal, int target, List<Integer> cur, List<List<Integer>> result){
+        if(curVal >= target){
+            if(curVal == target) result.add(new ArrayList<>(cur));
+            return;
+        }
 
-                sumHelper(candidates, i+1, curSum+val, target, newList, result);
-
-                // Skip repeat values
-                while(i+1 < candidates.length && candidates[i+1] == val){
-                    i++;
-                }
-            }
+        for(int i=index; i<candidates.length; i++){
+            if(i > index && candidates[i] == candidates[i-1]) continue;
+            cur.add(candidates[i]);
+            helper(candidates, i + 1, curVal + candidates[i], target, cur, result);
+            cur.remove(cur.size() - 1);
         }
     }
 
