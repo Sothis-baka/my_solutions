@@ -11,10 +11,9 @@ public class Main {
         int[] result = new int[length];
 
         // For each num in input, add it to sum, save current sum value to result array
-        int sum = 0;
-        for(int i=0; i<length; i++){
-            sum += nums[i];
-            result[i] = sum;
+        result[0] = nums[0];
+        for(int i=1; i<length; i++){
+            result[i] = result[i-1] + nums[i];
         }
 
         return result;
