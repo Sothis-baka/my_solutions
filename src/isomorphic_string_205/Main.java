@@ -11,23 +11,24 @@ import java.util.Map;
 public class Main {
     public boolean isIsomorphic(String s, String t) {
         int length = s.length();
+        // s(i) -> t(cache[i][0])
+        // t(i) -> s(cache[i][1])
+        Character[][] cache = new Character[255][2];
 
-        Map<Character, Character> cache = new HashMap<>();
-        char left, right;
         for(int i=0; i<length; i++){
-            left = s.charAt(i);
-            right = t.charAt(i);
+            char ch1 = s.charAt(i);
+            char ch2 = t.charAt(i);
 
-            if(cache.containsKey(left)){
-                if(cache.get(left) != right){
+            if(cache[ch1][0] == null && cache[ch2][1] == null){
+                // Both are available, save pair
+                cache[ch1][0] = ch2;
+                cache[ch2][1] = ch1;
+            }else if(cache[ch1][0] != null && cache[ch2] != null){
+                // Both are filled, compare
+                if(cache[ch1][0] != ch2 || cache[ch2][1] != ch1){
                     return false;
                 }
-            }else{
-                if(cache.containsValue(right)){
-                    return false;
-                }
-                cache.put(left, right);
-            }
+            }else return false;
         }
 
         return true;

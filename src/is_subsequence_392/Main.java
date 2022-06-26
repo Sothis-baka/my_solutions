@@ -6,31 +6,19 @@ package is_subsequence_392;
  */
 public class Main {
     public boolean isSubsequence(String s, String t) {
-        return subsequenceHelper(s, t, 0, 0, new boolean[s.length()][t.length()]);
-    }
+        // Get length of both string
+        int length1 = s.length(), length2 = t.length();
 
-    private boolean subsequenceHelper(String s, String t, int l, int r, boolean[][] cache){
-        if(l == s.length())
-            return true;
+        // Compare chs 1 by 1. if same, go to next index, if not same, move pointer on t
+        int l = 0, r = 0;
 
-        if(r == t.length()){
-            return false;
-        }
-
-        if(cache[l][r]){
-            // Visited
-            return false;
-        }
-
-        char cur = s.charAt(l);
-        int lengthT = t.length();
-        for(int i=r; i<lengthT; i++){
-            if(t.charAt(i) == cur && subsequenceHelper(s, t, l+1, i+1, cache)){
-                return true;
+        while (l < length1 && r < length2){
+            if(s.charAt(l) == t.charAt(r)){
+                l++;
             }
+            r++;
         }
 
-        cache[l][r] = true;
-        return false;
+        return (l == length1);
     }
 }
