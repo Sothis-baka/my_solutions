@@ -1,5 +1,7 @@
 package validate_binary_search_tree_98;
 
+import structures.TreeNode;
+
 /*
     Given the root of a binary tree, determine if it is a valid binary search tree (BST).
     A valid BST is defined as follows:
@@ -9,33 +11,24 @@ package validate_binary_search_tree_98;
     Both the left and right subtrees must also be binary search trees.
  */
 public class Main {
-    public static class TreeNode {
-        int val;
-        TreeNode left;
-        TreeNode right;
-        TreeNode() {}
-        TreeNode(int val) { this.val = val; }
-        TreeNode(int val, TreeNode left, TreeNode right) {
-            this.val = val;
-            this.left = left;
-            this.right = right;
-        }
-    }
-
     public boolean isValidBST(TreeNode root) {
-        return validHelper(root, null, null);
+        // Recursive
+        // Start from a node, check if its children are both valid
+        // A node should be valid if it's in range
+
+        return validateHelper(root, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
-    private boolean validHelper(TreeNode root, Integer min, Integer max){
-        if(root == null){
-            return true;
-        }
+    private boolean validateHelper(TreeNode root, int min, int max){
+        // Empty is valid
+        if(root == null) return true;
+        // Out of range is not valid
+        if(root.val < min || root.val > max) return false;
 
-        int val = root.val;
-        if((min != null && val <= min) || (max != null && val >= max)){
-            return false;
-        }
+        if(root.val == min && root.left != null) return false;
+        if(root.val == max && root.right != null) return false;
 
-        return validHelper(root.left, min, val) && validHelper(root.right, val, max);
+        // Check children
+        return (validateHelper(root.left, min, root.val - 1) && validateHelper(root.right, root.val + 1, max));
     }
 }

@@ -1,6 +1,6 @@
-package temp;
+package minimum_deletions_to_make_array_divisible_2344;
 
-import java.util.*;
+import java.util.Arrays;
 
 public class Main {
     public int minOperations(int[] nums, int[] numsDivide) {

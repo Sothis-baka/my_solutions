@@ -2,6 +2,7 @@ package LRU_cache_146;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 /*
@@ -15,33 +16,80 @@ import java.util.Map;
     The functions get and put must each run in O(1) average time complexity.
  */
 public class LRUCache {
-    Map<Integer, Integer> map = null;
+    /*
+        LinkedHashMap in Java Standard library, we can just override the removeEldestEntry method
+        Or use a LinkedList to save pair positions, and use a hashmap to save pairs
+     */
+
+    static class ListNode{
+        ListNode prev, next;
+        int key, value;
+
+        ListNode(int key, int value){
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    ListNode start, end;
+    HashMap<Integer, ListNode> cache;
+    int max;
+
+    private void moveToEnd(ListNode cur){
+        cur.prev.next = cur.next;
+        cur.next.prev = cur.prev;
+
+        cur.prev = end.prev;
+        cur.next = end;
+        end.prev.next = cur;
+        end.prev = cur;
+    }
+
+    private ListNode removeFirst(){
+        ListNode node = start.next;
+        start.next = start.next.next;
+        start.next.prev = start;
+        return node;
+    }
 
     public LRUCache(int capacity) {
-        map = new myLinkedHashMap<>(capacity);
+        this.start = new ListNode(0, 0);
+        this.end = new ListNode(0, 0);
+        this.start.next = this.end;
+        this.end.prev = this.start;
+        this.cache = new HashMap<>();
+        this.max = capacity;
     }
 
     public int get(int key) {
-        if(map.containsKey(key))
-            return map.get(key);
-        return -1;
+        ListNode cur = cache.get(key);
+        if(cur == null) return -1;
+
+        // It's now most recent one
+        moveToEnd(cur);
+        return cur.value;
     }
 
     public void put(int key, int value) {
-        map.put(key, value);
-    }
+        ListNode cur = cache.get(key);
 
-    private static class myLinkedHashMap<K, V> extends LinkedHashMap<K, V>{
-        int max;
+        if(cur == null){
+            // Ensure space
+            if(cache.size() == max){
+                cur = removeFirst();
+                cache.remove(cur.key);
+            }
 
-        myLinkedHashMap(int cap){
-            super(cap, 0.75f, true);
-            this.max = cap;
-        }
+            ListNode newNode = new ListNode(key, value);
+            newNode.next = end;
+            newNode.prev = end.prev;
+            end.prev.next = newNode;
+            end.prev = newNode;
 
-        @Override
-        protected boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > this.max;
+            cache.put(key, newNode);
+        }else{
+            cur.value = value;
+            moveToEnd(cur);
         }
     }
 }

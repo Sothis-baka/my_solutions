@@ -7,17 +7,12 @@ package best_time_to_buy_and_sell_stock_121;
  */
 public class Main {
     public int maxProfit(int[] prices) {
-        int max = 0;
-        int prev = prices[0];
-
-        for(int temp: prices){
-            if(temp < prev){
-                prev = temp;
-            }else{
-                max = Math.max(max, temp - prev);
-            }
+        // From start to end, update max by using curMax - curMin
+        int max = 0, curMin = prices[0];
+        for(int price: prices){
+            max = Math.max(max, price - curMin);
+            curMin = Math.min(price, curMin);
         }
-
         return max;
     }
 }

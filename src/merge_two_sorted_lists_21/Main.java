@@ -13,37 +13,30 @@ public class Main {
     }
 
     public static ListNode mergeTwoLists(ListNode l1, ListNode l2) {
-        /* newL.next is the head of new list */
-        ListNode newL = new ListNode();
-        ListNode pt = newL;
+        // Two pointers
+        ListNode head = new ListNode(), pt = head;
 
-        while(l1 != null || l2 != null){
-            // Nothing is in l1, append the whole l2 to list
-            if(l1 == null){
-                pt.next = l2;
-                break;
-            }
-
-            // Nothing is in l2, append the whole l1 to list
-            if(l2 == null){
-                pt.next = l1;
-                break;
-            }
-
-            // Append non-larger node to list
-            if(l1.val > l2.val){
-                pt.next = l2;
-                l2 = l2.next;
-            }else{
+        // Append the smaller one
+        while(l1 != null && l2 != null){
+            if(l1.val <= l2.val){
                 pt.next = l1;
                 l1 = l1.next;
+            }else{
+                pt.next = l2;
+                l2 = l2.next;
             }
-            // Point to next node, remove its pointer to next
+
             pt = pt.next;
-            pt.next = null;
         }
 
-        return newL.next;
+        // Append remain list
+        if(l1 != null){
+            pt.next = l1;
+        }else{
+            pt.next = l2;
+        }
+
+        return head.next;
     }
 
     public static void main(String[] args){
