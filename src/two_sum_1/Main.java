@@ -1,6 +1,5 @@
 package two_sum_1;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,41 +9,29 @@ import java.util.Map;
     You can return the answer in any order.
  */
 public class Main {
-    public static void main(String[] args){
-
-    }
-
-    public static int[] twoSum(int[] nums, int target) {
+    public int[] twoSum(int[] nums, int target) {
         /*
-            ArrayList<Integer> list = new ArrayList<>();
-            for(int temp: nums){
-                list.add(temp);
-            }
+            Use a hashmap to save visited values and their indexes
 
-            for(int i=0; i<list.size(); i++){
-                int temp = list.get(i);
-                int needed = target - temp;
-                int index = list.lastIndexOf(needed);
-                if(index >=0 && index != i){
-                    return new int[]{i, index};
-                }
-            }
+            For index i, find if target - i exists in the keyset of the map.
+            If so, return the result, else, save current value.
         */
 
-        Map<Integer, Integer> map = new HashMap<>();
-        int length = nums.length;
-        for(int i=0; i<length; i++){
-            int temp = nums[i];
-            int needed = target - temp;
+        // Init the map<value, index>
+        Map<Integer, Integer> map = new HashMap();
 
-            if(map.containsKey(needed)){
-                return new int[]{i, map.get(needed)};
+        for(int i=0; i<nums.length; i++){
+            int val = nums[i];
+
+            // Search in the map
+            if(map.containsKey(target - val)){
+                return new int[]{map.get(target - val), i};
+            }else{
+                map.put(val, i);
             }
-
-            // save value, index to map. hashmap is more efficient than arraylist when searching multiple times
-            map.put(temp, i);
         }
 
+        // Default return (not found)
         return new int[]{0, 0};
     }
 }
