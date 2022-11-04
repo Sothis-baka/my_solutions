@@ -7,86 +7,80 @@ import java.util.*;
     Each word must be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once in a word.
  */
 public class Main {
-    /*
-        Trie structure
-     */
-    private static class TrieNode{
-        TrieNode[] next;
-        String word;
+    static class Trie{
+        Trie[] children = new Trie[26];
+        String str;
 
-        TrieNode(){
-            this.next = new TrieNode[26];
-        }
-
-        protected void insert(String word){
-            TrieNode pt = this;
-
-            char[] charArr = word.toCharArray();
-            for(char ch: charArr){
-                if(pt.next[ch-'a'] != null){
-                    pt = pt.next[ch-'a'];
-                }else{
-                    TrieNode newTrie = new TrieNode();
-                    pt.next[ch-'a'] = newTrie;
-                    pt = newTrie;
-                }
+        void addWord(char[] chArr, int index){
+            if(index == chArr.length){
+                this.str = String.valueOf(chArr);
+                return;
             }
 
-            pt.word = word;
+            int chIndex = chArr[index] - 'a';
+
+            // If there is no child with character ch, create one
+            if(children[chIndex] == null)
+                children[chIndex] = new Trie();
+
+            // Recursively add all chars in str
+            children[chIndex].addWord(chArr, index + 1);
         }
     }
 
     public List<String> findWords(char[][] board, String[] words) {
-        // Save words as a trie tree
-        TrieNode head = new TrieNode();
-        for(String word: words){
-            head.insert(word);
-        }
+        Trie root = new Trie();
 
-        // Search tries on the board
-        Set<String> result = new HashSet<>();
+        for(String word: words)
+            root.addWord(word.toCharArray(), 0);
+
+        // Start from each cell, do dfs
+        List<String> result = new ArrayList<>();
         int height = board.length, width = board[0].length;
         for(int i=0; i<height; i++){
             for(int j=0; j<width; j++){
-                search(board, i, j, head, result);
+                dfs(root, board, i, j, height, width, result);
             }
         }
 
-        return new ArrayList<>(result);
+        return result;
     }
 
-    private void search(char[][] board, int i, int j, TrieNode trie, Set<String> result){
-        char cur = board[i][j];
-        // The cell is in process
-        if(cur == '\0'){
-            return;
+    private void dfs(Trie trie, char[][] board, int row, int col, int height, int width, List<String> result){
+        char ch = board[row][col];
+        // Visited or this character doesn't exist in current trie
+        if(ch == '\0' || trie.children[ch - 'a'] == null) return;
+
+        trie = trie.children[ch - 'a'];
+        // It's a complete string
+        if(trie.str != null) {
+            // Save to result
+            result.add(trie.str);
+            // Prevent duplicate
+            trie.str = null;
         }
 
-        TrieNode next = trie.next[cur - 'a'];
-        if(next != null){
-            if(next.word != null){
-                result.add(next.word);
-            }
 
-            board[i][j] = '\0';
+        // Mark current cell as visited
+        board[row][col] = '\0';
 
-            if(i > 0){
-                search(board, i-1, j, next, result);
-            }
+        // Continue searching
+        if(row > 0) dfs(trie, board, row - 1, col, height, width, result);
+        if(row < height - 1) dfs(trie, board, row + 1, col, height, width, result);
+        if(col > 0) dfs(trie, board, row, col - 1, height, width, result);
+        if(col < width - 1) dfs(trie, board, row, col + 1, height, width, result);
 
-            if(i < board.length - 1){
-                search(board, i+1, j, next, result);
-            }
+        // Change the cell back to origin
+        board[row][col] = ch;
+    }
 
-            if(j > 0){
-                search(board, i, j-1, next, result);
-            }
-
-            if(j < board[0].length - 1){
-                search(board, i, j+1, next, result);
-            }
-
-            board[i][j] = cur;
-        }
+    public static void main(String[] args){
+        System.out.println(
+                new Main().findWords(new char[][]{
+                        {'a'}
+                }, new String[]{
+                        "a"
+                })
+        );
     }
 }

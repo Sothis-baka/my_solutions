@@ -7,84 +7,53 @@ import java.util.*;
     Return all the possible results. You may return the answer in any order.
  */
 public class Main {
-    public static List<String> removeInvalidParentheses(String s) {
-        char[] chs = s.toCharArray();
-        Set<String> result = new HashSet<>();
-        int[] maxL = {0};
+    public List<String> removeInvalidParentheses(String s) {
+        List<String> result = new ArrayList<>();
 
-        validHelper(chs,0, maxL, result);
-        return new ArrayList<>(result);
+        // Use helper function to calculate the result
+        dfsRemove(s, 0, 0, '(', ')', result);
+        return result;
     }
 
-    private static void validHelper(char[] chs, int index, int[] maxL, Set<String> result){
-        int length = chs.length;
-        if(index > length){
-            return;
-        }
+    /*
+        The part before start is balanced
+        For the remain part, when it's not balanced, try to remove a parenthesis to make it balanced
+        (Only close parenthesis is too much will cause a problem)
+     */
+    private void dfsRemove(String s, int start, int lastRemove, char openParenthesis, char closeParenthesis, List<String> result){
+        int count = 0, length = s.length();
+        for(int i=start; i<length; i++){
+            if(s.charAt(i) == openParenthesis) count++;
+            else if(s.charAt(i) == closeParenthesis) count--;
 
-        int strLength = chsL(chs);
-        if(strLength < maxL[0]){
-            // No need to continue
-            return;
-        }
-
-        if(isValid(chs)){
-            StringBuilder strBd = new StringBuilder();
-            for(char ch: chs){
-                if(ch != '\0'){
-                    strBd.append(ch);
+            // Invalid situation
+            if(count < 0){
+                // Try to remove a close parentheses at index j
+                for(int j=lastRemove; j<=i; j++){
+                    // We only remove a close parenthesis is the previous one isn't used in previous loop
+                    if(s.charAt(j) == closeParenthesis && (j == lastRemove || s.charAt(j - 1) != closeParenthesis)) {
+                        // Since we removed a char at j, i here is actually pointing to i+1 and j is pointing to j + 1 in new string
+                        dfsRemove(s.substring(0, j) + s.substring(j+1), i, j, openParenthesis, closeParenthesis, result);
+                    }
                 }
-            }
 
-            // Discard all result worse than current
-            if(strLength > maxL[0]){
-                maxL[0] = strLength;
-                result.clear();
-            }
-
-            result.add(strBd.toString());
-            return;
-        }
-
-        for(int i=index; i<length; i++){
-            char cur = chs[i];
-            if(cur == '(' || cur == ')'){
-                chs[i] = '\0';
-                validHelper(chs, i+1, maxL, result);
-                chs[i] = cur;
-            }
-        }
-    }
-
-    private static int chsL(char[] chs){
-        int count = 0;
-        for(char ch: chs){
-            if(ch != '\0'){
-                count++;
-            }
-        }
-        return count;
-    }
-
-    private static boolean isValid(char[] chs){
-        int count = 0;
-        for (char ch : chs) {
-            if (ch == '(') {
-                count++;
-            } else if (ch == ')') {
-                if (--count < 0) {
-                    return false;
-                }
+                return;
             }
         }
 
-        return count == 0;
+        // Reached the end of the string
+        // Do it reversely to check openParenthesis
+        String reversed = new StringBuilder(s).reverse().toString();
+        if(openParenthesis == '('){
+            // it's not reversed yet, reverse it
+            dfsRemove(reversed, 0, 0, closeParenthesis, openParenthesis, result);
+        }else{
+            // Finished both dir, reverse back and return
+            result.add(reversed);
+        }
     }
 
     public static void main(String[] args){
-        System.out.println(removeInvalidParentheses("()())()"));
-        System.out.println(removeInvalidParentheses("(a)())()"));
-        System.out.println(removeInvalidParentheses(")("));
-        System.out.println(removeInvalidParentheses("n"));
+        System.out.println(new Main().removeInvalidParentheses("(a)())()"));
     }
 }

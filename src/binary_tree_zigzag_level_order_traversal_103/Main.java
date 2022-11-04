@@ -2,9 +2,7 @@ package binary_tree_zigzag_level_order_traversal_103;
 
 import structures.TreeNode;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /*
     Given the root of a binary tree, return the zigzag level order traversal of its nodes' values. (i.e., from left to right, then right to left for the next level and alternate between).
@@ -14,37 +12,29 @@ public class Main {
         List<List<Integer>> result = new ArrayList<>();
 
         // BFS
-        boolean toRight = false;
+        boolean toRight = true;
         // Use to save candidates
-        Stack<TreeNode> stack = new Stack<>();
-        stack.push(root);
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
 
-        while(!stack.isEmpty()){
-            Stack<TreeNode> nextStack = new Stack<>();
+        while(!queue.isEmpty()){
+            int size = queue.size();
             List<Integer> row = new ArrayList<>();
 
-            while(!stack.isEmpty()){
-                TreeNode node = stack.pop();
-
-                if(node == null){
-                    continue;
-                }
+            for(int i=0; i<size; i++){
+                TreeNode node = queue.poll();
+                if(node == null) continue;
 
                 row.add(node.val);
-                if(toRight){
-                    nextStack.push(node.left);
-                    nextStack.push(node.right);
-                }else{
-                    nextStack.push(node.right);
-                    nextStack.push(node.left);
-                }
+                queue.offer(node.left);
+                queue.offer(node.right);
             }
 
             // Save this row
-            if(!row.isEmpty())
+            if(!row.isEmpty()) {
+                if(!toRight) Collections.reverse(row);
                 result.add(row);
-            // Replace stack
-            stack = nextStack;
+            }
             // Change direction
             toRight = !toRight;
         }

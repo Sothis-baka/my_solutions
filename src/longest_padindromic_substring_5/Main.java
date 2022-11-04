@@ -2,62 +2,44 @@ package longest_padindromic_substring_5;
 
 /*
     Given a string s, return the longest palindromic substring in s.
-
-    Input: s = "babad"
-    Output: "bab"
-    Note: "aba" is also a valid answer.
+    A string is called a palindrome string if the reverse of that string is the same as the original string.
  */
 public class Main {
-    public static void main(String[] args){
-        String str = "abadsfa";
-        System.out.println(longestPalindrome(str));
+    public String longestPalindrome(String s) {
+        /*
+            There are two kinds of palindrome, length odd / even
+            Start from an empty string or start with a character at any position,
+            expand it to reach as long as possible
+         */
+        String max = "";
+
+        /*
+            Check for even length str
+         */
+        for(int i=0; i<s.length() - 1; i++){
+            String result = maxPalindromeLength(s, i, i + 1);
+            if(result.length() > max.length()) max = result;
+        }
+
+
+        /*
+            Check for odd length str
+         */
+        for(int i=0; i<s.length() - 1; i++){
+            String result = maxPalindromeLength(s, i, i + 2);
+            if(result.length() > max.length()) max = result;
+        }
+
+        return max;
     }
 
-    public static String longestPalindrome(String s) {
-        int length = s.length();
-        // no need to continue
-        if(length < 2){
-            return s;
-        }
+    /*
+        Return the maximum length of a palindrome with substring l + 1, r - 1 at center
+     */
+    private String maxPalindromeLength(String s, int l, int r){
+        if(l < 0 || r >= s.length() || s.charAt(l) != s.charAt(r))
+            return s.substring(l + 1, Math.min(r, s.length()));
 
-        String result="", temp;
-        int tempLength, max=0;
-
-        for(int i=0; i<length; i++){
-            temp = tryExpand(s, i);
-            tempLength = temp.length();
-
-            if(tempLength > max){
-                max = tempLength;
-                result = temp;
-            }
-        }
-
-        return result;
-    }
-
-    public static String tryExpand(String s, int index){
-        char cur = s.charAt(index);
-        int left=index, right=index, length=s.length();
-
-        // first include all chars near and same as the current char
-        while (left>=0 && s.charAt(left) == cur){
-            left--;
-        }
-        while (right<length && s.charAt(right) == cur){
-            right++;
-        }
-
-        while (left>=0 && right<length){
-            if(s.charAt(left) == s.charAt(right)){
-                left--;
-                right++;
-            }else{
-                break;
-            }
-        }
-
-        // left, right are two chars exactly out of the string we need
-        return s.substring(left+1, right);
+        return maxPalindromeLength(s, l - 1, r + 1);
     }
 }

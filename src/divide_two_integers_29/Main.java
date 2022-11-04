@@ -9,71 +9,23 @@ package divide_two_integers_29;
     2147483647, -2147483648
  */
 public class Main {
-    final static int MAX_N = 2147483647, MIN_N = -2147483648;
+    public int divide(int dividend, int divisor) {
+        if(dividend == Integer.MIN_VALUE && divisor == -1) return Integer.MAX_VALUE;
 
-    public static int divide(int dividend, int divisor) {
-        // No need to calculate cases
-        if(dividend == 0){
-            return 0;
-        }
-        if(divisor == 1){
-            return dividend;
-        }
-        if(divisor == -1){
-            // Special case -2147483648 / -1
-            if(dividend == MIN_N){
-                return MAX_N;
-            }else {
-                return -dividend;
-            }
+        boolean positive = (dividend > 0) == (divisor > 0);
+        int result = 0, x;
+        dividend = Math.abs(dividend);
+        divisor = Math.abs(divisor);
+        while(dividend - divisor >= 0){
+            for(x=0; dividend - (divisor << x << 1) >=0; x++);
+            result += 1 << x;
+            dividend -= divisor << x;
         }
 
-        // Negative symbol, turn positive into negative won't affect the number
-        boolean neg = false;
-        if(dividend < 0){
-            neg = true;
-        }else {
-            dividend = -dividend;
-        }
-        if(divisor < 0){
-            neg = !neg;
-        }else {
-            divisor = - divisor;
-        }
-
-        int result = quickDivide(dividend, divisor);
-
-        return neg ? -result : result;
-    }
-
-    /* Recursive */
-    public static int quickDivide(int a, int b){
-        if(a > b){
-            return 0;
-        }
-
-        int result = 1, curNum = b;
-        // Prevent number exceeding bound
-        if(curNum < -1073741824){
-            return result;
-        }
-
-        // Logarithm increase
-        int temp = curNum + curNum;
-        while (a < temp){
-            result += result;
-            curNum = temp;
-            // Prevent number exceeding bound
-            if(curNum < -1073741824){
-                return result + quickDivide(a-curNum, b);
-            }
-            temp = curNum + curNum;
-        }
-
-        return result + quickDivide(a-curNum, b);
+        return positive ? result : -result;
     }
 
     public static void main(String[] args){
-        System.out.println(divide(MIN_N, 2));
+        System.out.println(new Main().divide(10, 3));
     }
 }
