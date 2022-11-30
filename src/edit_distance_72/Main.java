@@ -30,4 +30,10 @@ public class Main {
 
         return cache[l1][l2];
     }
+
+    public static void main(String[] args){
+        System.out.println(new Main().minDistance("horse", "ros"));
+        System.out.println(new Main().minDistance("intention", "execution"));
+        System.out.println(new Main().minDistance("zoologicoarchaeologist", "zoogeologist"));
+    }
 }
